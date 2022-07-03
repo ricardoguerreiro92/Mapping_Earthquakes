@@ -5,7 +5,7 @@ console.log("Working");
 
 
 //// Adds street layer
-let street = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     tileSize: 512,
@@ -13,8 +13,7 @@ let street = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tile
     accessToken: API_KEY
 });
 
-// Creates Dark Tile Layer to the map
-let darkMap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let satStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     tileSize: 512,
@@ -22,35 +21,20 @@ let darkMap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tile
     accessToken: API_KEY
 });
 
-let dayNav = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/navigation-preview-day-v4/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: API_KEY
-});
-//// adds night navigation preview layer to map
-let nightPrev = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/navigation-preview-night-v4/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: API_KEY
-});
 
 // Creates baseMaps for different layers to be controlled by control function
 let baseMaps = {
     // Light: light,
     // Dark: darkMap
-    "Day Navigation": dayNav,
-    "Night Navigation": nightPrev
+    Streets: streets,
+    "Satellite Streets": satStreets
 };
 
 // Create the map object with a center and zoom level - can only use layers: [layer variable name here] after base layer as been set as show above 
 let map = L.map('mapid',{
-    center: [44.0, -80.0],
-    zoom:2,
-    layers: [dayNav]
+    center: [43.7, -79.3],
+    zoom:11,
+    layers: [streets]
 });
 
 //////////////////////// NOTE TO SELF - No need to create variables to call in baseMaps -> we can do key(in this case streets): L.tilelayer() function then on layers: [] we can call dictionary.key -> example here would be baseMaps.Street
@@ -113,9 +97,11 @@ L.control.layers(baseMaps).addTo(map);
 // outdoors.addTo(map);
 
 //// Add GeoJSON data w/ external link
-let torontoData = "https://raw.githubusercontent.com/ricardoguerreiro92/Mapping_Earthquakes/main/torontoRoutes.json"
+let torontoData = "https://raw.githubusercontent.com/ricardoguerreiro92/Mapping_Earthquakes/main/torontoRoutes.json";
 
-let airportData = "https://raw.githubusercontent.com/ricardoguerreiro92/Mapping_Earthquakes/Mapping_GeoJSON_Points/Mapping_GeoJSON_Points/static/js/majorAirports.json"
+let airportData = "https://raw.githubusercontent.com/ricardoguerreiro92/Mapping_Earthquakes/Mapping_GeoJSON_Points/Mapping_GeoJSON_Points/static/js/majorAirports.json";
+
+let torontoHoods = "https://raw.githubusercontent.com/ricardoguerreiro92/Mapping_Earthquakes/main/torontoNeighborhoods.json";
 
 // // Next, we'll add the d3.json() method, which returns a promise with the then() method and the anonymous function().
 // d3.json(airportData).then(function(data){
@@ -149,6 +135,21 @@ d3.json(airportData).then(function(data){
         }
     });
 });
+
+// creating Polygons from torontoHoods
+d3.json(torontoHoods).then(function(data){
+    console.log(data);
+    // Create GeoJSON layer with the retrieved data from torontoHoods, adds bindPopup for each polygon and changes color to yellow
+    L.geoJSON(data, {
+        onEachFeature: function(feature, layer){
+            layer.bindPopup("<h3>Neighborhood: " + feature.properties.AREA_NAME + "</h3>")
+        },
+        style: function(){
+            return { color: "blue", fillColor: "yellow",  weight: 1}
+        }
+    }).addTo(map);
+});
+
 //// pointToLayer function below
 
 //// Grabbing our GeoJSON Data
@@ -197,16 +198,6 @@ d3.json(airportData).then(function(data){
 // L.polyline(line, {
 //     color: "yellow"
 // }).addTo(map);
-
-// let satStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-//     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-//     maxZoom: 18,
-//     tileSize: 512,
-//     zoomOffset: -1,
-//     accessToken: API_KEY
-// });
-
-// // satStreets.addTo(map);
 
 //// SkilLDrill 13.4.3 - Create a dashed line from SFO to AUS to YYZ to Kearny 
 // let dashLine = [
