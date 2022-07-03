@@ -1,3 +1,6 @@
+#ignore personal json file
+geoJSON.json
+
 #ignore the API KEY config.js file
 config.js
 
