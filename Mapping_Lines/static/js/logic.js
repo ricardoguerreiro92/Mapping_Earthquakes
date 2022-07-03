@@ -27,7 +27,7 @@ let satStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-
 
 // satStreets.addTo(map);
 
-// SkilLDrill 13.4.3 - Create line from SFO to AUS to YYZ to Kearny 
+// SkilLDrill 13.4.3 - Create a dashed line from SFO to AUS to YYZ to Kearny 
 let dashLine = [
     [37.6213, -122.3790],
     [30.1975, -97.6664],
