@@ -2,29 +2,60 @@
 console.log("Working");
 
 // Create the map object with a center and zoom level.
-let map = L.map('mapid').setView([37.5, -122.5], 10);
+let map = L.map('mapid').setView([30, 30], 2);
 
-// Add GeoJSON data.
-let sanFranAirport =
-{"type":"FeatureCollection","features":[{
-    "type":"Feature",
-    "properties":{
-        "id":"3469",
-        "name":"San Francisco International Airport",
-        "city":"San Francisco",
-        "state": "CA",
-        "country":"United States",
-        "faa":"SFO",
-        "icao":"KSFO",
-        "alt":"13",
-        "tz-offset":"-8",
-        "dst":"A",
-        "tz":"America/Los_Angeles"},
-        "geometry":{
-            "type":"Point",
-            "coordinates":[-122.375,37.61899948120117]}}
-]};
+//// Add GeoJSON data.
+// let sanFranAirport =
+// {"type":"FeatureCollection","features":[{
+//     "type":"Feature",
+//     "properties":{
+//         "id":"3469",
+//         "name":"San Francisco International Airport",
+//         "city":"San Francisco",
+//         "state": "CA",
+//         "country":"United States",
+//         "faa":"SFO",
+//         "icao":"KSFO",
+//         "alt":"13",
+//         "tz-offset":"-8",
+//         "dst":"A",
+//         "tz":"America/Los_Angeles"},
+//         "geometry":{
+//             "type":"Point",
+//             "coordinates":[-122.375,37.61899948120117]}}
+// ]};
 
+//// adds  outdoor layer to map - Having the tileLayer() method before accessing large datasets ensures that the map gets loaded before the data is added to it.
+let outdoors = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: API_KEY
+});
+outdoors.addTo(map);
+
+
+//// Add GeoJSON data w/ external link
+let airportData = "https://raw.githubusercontent.com/ricardoguerreiro92/Mapping_Earthquakes/Mapping_GeoJSON_Points/Mapping_GeoJSON_Points/static/js/majorAirports.json"
+
+// // Next, we'll add the d3.json() method, which returns a promise with the then() method and the anonymous function().
+// d3.json(airportData).then(function(data){
+//     console.log(data);
+//     // creating a GeoJSON layer with the retrieved data
+//     L.geoJSON(data).addTo(map);
+// });
+
+//skilldrill 13.5.3 - add binPopup to json data
+d3.json(airportData).then(function(data){
+    console.log(data);
+    // Create GeoJSON layer with the retrieved data and a bindPopup for each marker
+    L.geoJSON(data, {
+        onEachFeature: function(feature, layer){
+            layer.bindPopup("<h3>Airport Code: " + feature.properties.faa + "</h3><hr><h4>Airport Name: " + feature.properties.name + "</h4>").addTo(map);
+        }
+    });
+});
 //// pointToLayer function below
 
 //// Grabbing our GeoJSON Data
@@ -61,22 +92,12 @@ let sanFranAirport =
 
 //// onEachFeature function below
 //// SkillDrill 13.5.2 part 2 - add outdoor tile layer w/ popup that displays Airport Code + airport name
-L.geoJSON(sanFranAirport, {
-    onEachFeature: function(feature, layer){
-        console.log(layer);
-        layer.bindPopup("<h3>Airport Code: " + feature.properties.faa + "</h3><hr><h4>Airport Name: " + feature.properties.name + "</h4>");
-    }
-}).addTo(map);
-
-//// adds  outdoor layer to map (part of the skilldrill 13.5.2 part 2)
-let outdoors = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: API_KEY
-});
-outdoors.addTo(map);
+// L.geoJSON(sanFranAirport, {
+//     onEachFeature: function(feature, layer){
+//         console.log(layer);
+//         layer.bindPopup("<h3>Airport Code: " + feature.properties.faa + "</h3><hr><h4>Airport Name: " + feature.properties.name + "</h4>");
+//     }
+// }).addTo(map);
 
 
 ////////// CODE BELOW FOR LINES AND DASHED LINES  //////////
