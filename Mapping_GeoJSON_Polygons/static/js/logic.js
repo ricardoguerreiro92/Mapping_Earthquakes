@@ -37,8 +37,8 @@ let map = L.map('mapid',{
     layers: [streets]
 });
 
-//////////////////////// NOTE TO SELF - No need to create variables to call in baseMaps -> we can do key(in this case streets): L.tilelayer() function then on layers: [] we can call dictionary.key -> example here would be baseMaps.Street
-                                                                                                                                                                                                            // if variable hasnt been created
+/////////////////////////////////// NOTE TO SELF - No need to create variables to call in baseMaps -> we can do key(in this case streets): L.tilelayer() function then on layers: [] we can call dictionary.key -> example here would be baseMaps.Street
+                                                                                                                                                                                                            ///////////// if variable hasnt been created
 /////////////////////////////////////////////////////////////////////////////////////////////////////////// EXAMPLE OF PREVIOUS NOTE TO SELF ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  let baseMaps = {                                                                                                                                                                                                                                  //
 //     Street: L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {                                                                                                                      //
@@ -136,7 +136,7 @@ d3.json(airportData).then(function(data){
     });
 });
 
-// creating Polygons from torontoHoods
+// creating Polygons from torontoHoods - SkillDrill 13.5.6 - add bindPopup for each neighborhood, changes fillColor to yellow
 d3.json(torontoHoods).then(function(data){
     console.log(data);
     // Create GeoJSON layer with the retrieved data from torontoHoods, adds bindPopup for each polygon and changes color to yellow
