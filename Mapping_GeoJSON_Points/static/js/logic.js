@@ -1,8 +1,67 @@
 // add console.log to check to see if our code is working
 console.log("Working");
 
-// Create the map object with a center and zoom level.
-let map = L.map('mapid').setView([30, 30], 2);
+//////////////////////// NOTE TO SELF - DO TILE LAYERS FIRST THEN CALL MAP THEN DO MARKERS ETC ////////////////////////
+
+
+//// Adds street layer
+let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: API_KEY
+});
+
+// Creates Dark Tile Layer to the map
+let darkMap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: API_KEY
+});
+
+// Creates baseMaps for different layers to be controlled by control function
+let baseMaps = {
+    Street: streets,
+    Dark: darkMap
+};
+
+// Create the map object with a center and zoom level - can only use layers: [layer variable name here] after base layer as been set as show above 
+let map = L.map('mapid',{
+    center: [40.7, -94.5],
+    zoom:4,
+    layers: [streets]
+});
+
+//////////////////////// NOTE TO SELF - No need to create variables to call in baseMaps -> we can do key(in this case streets): L.tilelayer() function then on layers: [] we can call dictionary.key -> example here would be baseMaps.Street
+                                                                                                                                                                                                            // if variable hasnt been created
+/////////////////////////////////////////////////////////////////////////////////////////////////////////// EXAMPLE OF PREVIOUS NOTE TO SELF ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  let baseMaps = {                                                                                                                                                                                                                                  //
+//     Street: L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {                                                                                                                      //
+//         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',    //
+//         maxZoom: 18,                                                                                                                                                                                                                               //
+//         tileSize: 512,                                                                                                                                                                                                                             //
+//         zoomOffset: -1,                                                                                                                                                                                                                            //
+//         accessToken: API_KEY                                                                                                                                                                                                                       //
+//     }),                                                                                                                                                                                                                                            //
+//     Dark: L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {                                                                                                                           //
+//         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',    //
+//         maxZoom: 18,                                                                                                                                                                                                                               //
+//         tileSize: 512,                                                                                                                                                                                                                             //
+//         zoomOffset: -1,                                                                                                                                                                                                                            //
+//         accessToken: API_KEY                                                                                                                                                                                                                       //
+//     })                                                                                                                                                                                                                                             //
+// };                                                                                                                                                                                                                                                 //
+//                                                                                                                                                                                                                                                    //
+// let map = L.map('mapid', {                                                                                                                                                                                                                         //
+//     center: [40.7, -94.5],                                                                                                                                                                                                                         //
+//     zoom:4,                                                                                                                                                                                                                                        //
+//     layers: [baseMaps.Street]                                                                                                                                                                                                                      //
+// });                                                                                                                                                                                                                                                //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////// EXAMPLE OF PREVIOUS NOTE TO SELF ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+L.control.layers(baseMaps).addTo(map);
 
 //// Add GeoJSON data.
 // let sanFranAirport =
@@ -26,15 +85,14 @@ let map = L.map('mapid').setView([30, 30], 2);
 // ]};
 
 //// adds  outdoor layer to map - Having the tileLayer() method before accessing large datasets ensures that the map gets loaded before the data is added to it.
-let outdoors = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: API_KEY
-});
-outdoors.addTo(map);
-
+// let outdoors = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+//     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+//     maxZoom: 18,
+//     tileSize: 512,
+//     zoomOffset: -1,
+//     accessToken: API_KEY
+// });
+// outdoors.addTo(map);
 
 //// Add GeoJSON data w/ external link
 let airportData = "https://raw.githubusercontent.com/ricardoguerreiro92/Mapping_Earthquakes/Mapping_GeoJSON_Points/Mapping_GeoJSON_Points/static/js/majorAirports.json"
@@ -159,17 +217,6 @@ d3.json(airportData).then(function(data){
 //     zoom: 4
 // });
 
-//// We create the tile layer that will be the background of our map.
-// let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-//     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-//     maxZoom: 18,
-//     tileSize: 512,
-//     zoomOffset: -1,
-//     accessToken: API_KEY
-// });
-// Then we add our 'graymap' tile layer to the map.
-// streets.addTo(map);
-
 //// Add a marker to the map of Los Angeles, California
 // var marker = L.marker([34.0522, -118.2437]).addTo(map);
 
@@ -181,14 +228,6 @@ d3.json(airportData).then(function(data){
 
 //// SkillDrill 13.4.1
 
-//// Creates Dark Tile Layer to the map
-// let darkmap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-//     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-//     maxZoom: 18,
-//     tileSize: 512,
-//     zoomOffset: -1,
-//     accessToken: API_KEY
-// });
 
 //// Then we add our 'darkmap' tile layer to the map.
 // darkmap.addTo(map);
