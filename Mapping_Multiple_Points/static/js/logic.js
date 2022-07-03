@@ -2,7 +2,7 @@
 console.log("Working");
 
 // Create the map object with a center and zoom level.
-let map = L.map("mapid").setView([29.7604, -95.3698], 5);
+let map = L.map("mapid").setView([36.1733, -120.1794], 7);
 
 //// Another method for the above
 // let map2 = L.map("mapid", {
